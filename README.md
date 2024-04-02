@@ -20,3 +20,7 @@ Este proyecto consiste en una API REST desarrollada con Laravel para gestionar l
 3. Configurar el archivo `.env` con las credenciales de la base de datos.
 4. Ejecutar `php artisan migrate --seed` para crear la base de datos y cargar datos de prueba.
 5. Iniciar el servidor de desarrollo con `php artisan serve`.
+
+#### Aplicación Web (Frontend con Angular)
+1. Navegar al directorio de la aplicación Angular.
+2. Ejecutar `npm install` para instalar las dependencias de JavaScript.
