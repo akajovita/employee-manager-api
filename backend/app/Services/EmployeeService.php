@@ -20,7 +20,7 @@ class EmployeeService
 
     public function findById($id)
     {
-        return User::findOrFail($id);
+        return $this->employeeRepository->findById($id);
     }
 
     public function create(array $data)
@@ -35,7 +35,6 @@ class EmployeeService
 
     public function delete($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
+        $user = $this->employeeRepository->delete($id);
     }
 }
