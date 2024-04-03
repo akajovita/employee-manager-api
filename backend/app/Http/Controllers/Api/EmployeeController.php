@@ -3,27 +3,34 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Services\EmployeeService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class EmployeeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $employeeService;
+
+    public function __construct(EmployeeService $employeeService)
+    {
+        $this->employeeService = $employeeService;
+    }
+
     public function index()
     {
-        $employees = User::all();
+        $employees = $this->employeeService->getAll();
         return response()->json($employees);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function show($id)
+    {
+        $employee = $this->employeeService->findById($id);
+        return response()->json($employee);
+    }
+
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -31,42 +38,29 @@ class EmployeeController extends Controller
             'address' => 'required|string|max:1024',
         ]);
 
-        $employee = User::create($request->all());
+        $employee = $this->employeeService->create($validatedData);
 
-        return response()->json($employee, Response::HTTP_CREATED);
+        return response()->json($employee, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, $id)
     {
-        $employee = User::findOrFail($id);
-        return response()->json($employee);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $id,
+        $validatedData = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'last_name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|email|unique:users,email,' . $id,
+            'date_of_birth' => 'sometimes|required|date|before:today',
+            'address' => 'sometimes|required|string|max:1024',
         ]);
 
-        $employee = User::findOrFail($id);
-        $employee->update($request->all());
+        $employee = $this->employeeService->update($id, $validatedData);
 
         return response()->json($employee);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        User::destroy($id);
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        $this->employeeService->delete($id);
+        return response()->json(null, 204); // No Content
     }
 }
