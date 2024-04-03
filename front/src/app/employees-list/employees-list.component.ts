@@ -1,17 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { EmployeeService } from '../services/employee.service'
+import { EmployeeService } from '../services/employee.service';
 
 @Component({
   selector: 'app-employees-list',
   standalone: true,
   imports: [
-    HttpClientModule,
+    CommonModule,
+    HttpClientModule
   ],
   templateUrl: './employees-list.component.html',
-  styleUrl: './employees-list.component.css'
+  styleUrls: ['./employees-list.component.css']
 })
-export class EmployeesListComponent {
+export class EmployeesListComponent implements OnInit {
   employees: any[] = [];
 
   constructor(private employeeService: EmployeeService) {}
@@ -21,8 +23,7 @@ export class EmployeesListComponent {
       next: (data) => {
         this.employees = data;
       },
-      error: (error) => console.error(error),
-      // No es necesario implementar 'complete' para este caso
+      error: (error) => console.error(error)
     });
   }
 }
